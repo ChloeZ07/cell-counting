@@ -29,23 +29,30 @@ def choose_channel(image, image_path):
         return image[:, :, 2], "blue"
 
 
-def segment_cells(image, image_path):
+def segment_cells(image, image_path, threshold_factor=None, min_size=None, min_distance=None):
     gray, used_channel = choose_channel(image, image_path)
 
     smooth = filters.gaussian(gray, sigma=1)
 
     if "neun" in image_path.lower():
-        threshold_factor = 0.85
-        min_size = 45
-        min_distance = 7
+        default_threshold_factor = 0.85
+        default_min_size = 45
+        default_min_distance = 7
     elif "olig2" in image_path.lower():
-        threshold_factor = 0.95
-        min_size = 20
-        min_distance = 10
+        default_threshold_factor = 0.95
+        default_min_size = 20
+        default_min_distance = 10
     else:
-        threshold_factor = 1.0
-        min_size = 30
-        min_distance = 8
+        default_threshold_factor = 1.0
+        default_min_size = 30
+        default_min_distance = 8
+
+    if threshold_factor is None:
+        threshold_factor = default_threshold_factor
+    if min_size is None:
+        min_size = default_min_size
+    if min_distance is None:
+        min_distance = default_min_distance
 
     threshold = filters.threshold_otsu(smooth) * threshold_factor
     binary = smooth > threshold
