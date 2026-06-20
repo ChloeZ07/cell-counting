@@ -3,3 +3,4 @@ numpy
 tifffile
 scipy
 scikit-image
+pillow
